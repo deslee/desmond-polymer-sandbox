@@ -69,7 +69,7 @@ gulp.task('move:static', function() {
     .pipe(gulp.dest('./build/bower_components'));
 });
 
-gulp.task('move', ['move:html', 'move:css', 'move:static']);
+gulp.task('move', ['move:html', 'move:css', 'move:static', 'build:json']);
 
 gulp.task('serve', function() {
   gulp.src('./build')
@@ -118,7 +118,7 @@ gulp.task('build:json', function() {
   fs.writeFileSync('./build/static/pages.json', JSON.stringify(list));
 });
 
-gulp.task('build', ['build:vendor', 'build:app', 'build:json']);
+gulp.task('build', ['build:vendor', 'build:app']);
 
 gulp.task('main', ['build', 'move', 'serve']);
 

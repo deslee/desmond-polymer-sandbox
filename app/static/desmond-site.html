@@ -33,7 +33,7 @@
         font-weight: 400;
       }
 
-      desmond-content, header h1 {
+      desmond-content, header .header-content {
         max-width: 1024px;
         margin: 0 auto;
         display:block;
@@ -47,16 +47,23 @@
       header h1 {
         font-size: 3em;
         font-weight: 300;
+        margin: 0;
       }
 
+      .alpha { border-left-color: #e74c3c; }
+      .bravo { border-left-color: #3498db; }
+      .charlie { border-left-color: #2ecc71; }
+      .delta { border-left-color: #1abc9c; }
+      .echo { border-left-color: #9b59b6; }
+
       @media only screen {
-        header h1 {
+        header .header-content {
           text-align: center;
         }
       }
 
       @media only screen and (min-width: 641px) {
-        header h1 {
+        header .header-content {
           text-align: inherit;
         }
       }
@@ -68,7 +75,11 @@
         <desmond-menu posts="{{posts}}" selected="{{selected}}" selectedIndex="{{pageIndex}}" menuItems="{{menuItems}}"></desmond-menu>
         <div id="wrapper">
 
-          <header><h1>Desmond Lee</h1></header>
+          <header>
+            <div class="header-content">
+              <h1>Desmond Lee</h1>
+            </div>
+          </header>
           <desmond-content posts="{{posts}}" pages="{{pages}}" page="{{selected}}" pageIndex="{{pageIndex}}"></desmond-content>
         </div>
       </main>
