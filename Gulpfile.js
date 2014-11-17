@@ -93,19 +93,32 @@ gulp.task('watch', function() {
   watch('./app/**/*.js', 'build:app');
   watch('./app/app.scss', 'move:css');
   watch('./app/static/**/*', 'move:static');
-  watch('./app/static/blog/**/*', ['build:blog', 'move:static']);
+  watch('./app/static/blog/**/*', ['build:json', 'move:static']);
+  watch('./app/static/pages/**/*', ['build:json', 'move:static']);
 });
 
-gulp.task('build:blog', function() {
+gulp.task('build:json', function() {
   var files = fs.readdirSync('./app/static/blog');
   var list = files.map(function(e) {
     var content = fs.readFileSync('./app/static/blog/' + e, {encoding: 'utf8'});
-    return marked(content);
+    var markdown = marked(content);
+    markdown.meta.slug = e.split('.')[0];
+    return markdown;
   });
   fs.writeFileSync('./build/static/blog.json', JSON.stringify(list));
+
+
+  files = fs.readdirSync('./app/static/pages');
+  list = files.map(function(e) {
+    var content = fs.readFileSync('./app/static/pages/' + e, {encoding: 'utf8'});
+    var markdown = marked(content);
+    markdown.meta.slug = e.split('.')[0];
+    return markdown;
+  });
+  fs.writeFileSync('./build/static/pages.json', JSON.stringify(list));
 });
 
-gulp.task('build', ['build:vendor', 'build:app', 'build:blog']);
+gulp.task('build', ['build:vendor', 'build:app', 'build:json']);
 
 gulp.task('main', ['build', 'move', 'serve']);
 

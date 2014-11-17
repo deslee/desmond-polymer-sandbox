@@ -10,3 +10,19 @@ body > main {
   height: 100%;
   box-sizing: border-box;
 }
+
+body {
+  background-color: #ecf0f1;
+}
+
+@media only screen {
+  body {
+    font-size: 16px;
+  }
+}
+
+@media only screen and (min-width: 641px) {
+  body {
+    font-size: 18px;
+  }
+}

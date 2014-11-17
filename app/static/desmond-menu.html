@@ -6,7 +6,7 @@
 <link rel="import" href="../../bower_components/core-collapse/core-collapse.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 
-<polymer-element name="desmond-menu" attributes="selected menuItems">
+<polymer-element name="desmond-menu" attributes="selected menuItems selectedIndex posts">
 <template>
   <style>
     #menuButton::shadow #ripple {
@@ -15,13 +15,14 @@
 
     paper-tabs {
       font-size: 1.25em;
-      background-color: #ecf0f1; /*clouds*/
       font-weight: 300;
       text-transform: lowercase;
+      margin-bottom: -3px;
     }
 
     paper-tabs::shadow #selectionBar {
       background-color: #e74c3c; /*alizarin*/
+      height: 3px;
     }
 
     paper-tabs paper-tab::shadow #ink {
@@ -47,7 +48,7 @@
     }
 
     core-menu {
-      background-color: #ecf0f1; /*clouds*/
+      background-color: white;
       margin: 0;
     }
 
@@ -60,18 +61,14 @@
       color: #ecf0f1;
       font-weight: normal;
     }
-
-    h1 {
-      padding-left: 8px;
-    }
   </style>
 
   <div class="dropdown">
     <paper-icon-button id="menuButton" on-click="{{menuButtonClicked}}" icon="menu"></paper-icon-button>
     <core-collapse id="menu">
-      <core-menu selected="{{selected}}">
+      <core-menu selected="{{selected}}" selectedIndex="{{selectedIndex}}">
         <template repeat="{{item in menuItems}}">
-          <core-item label="{{item.name}}" on-click="{{menuAction}}" name="{{item.name}}"></core-item>
+          <core-item label="{{item.name}}" route="{{item.route}}" on-click="{{menuAction}}" name="{{item.name}}"></core-item>
         </template>
 
       </core-menu>
@@ -79,25 +76,49 @@
   </div>
 
   <div class="tabs">
-    <paper-tabs selected="{{selected}}" noink>
+    <paper-tabs selected="{{selected}}" selectedIndex="{{selectedIndex}}" noink>
       <template repeat="{{item in menuItems}}">
-        <paper-tab name="{{item.name}}" on-click="{{menuAction}}">{{item.name}}</paper-tab>
+        <paper-tab name="{{item.name}}" route="{{item.route}}" on-click="{{menuAction}}">{{item.name}}</paper-tab>
       </template>
     </paper-tabs>
   </div>
-
-  <h1>Desmond Lee</h1>
-
 </template>
 
 <script>
   Polymer({
-    ready: function() {
+    domReady: function() {
+      var self = this;
+      this.onHashChange();
+      require('jquery')(window).on('hashchange', function() {
+        self.onHashChange();
+        window.scrollTo(0,0)
+      })
     },
     menuButtonClicked: function() {
       this.$.menu.toggle();
     },
     menuAction: function(e, v, element) {
+      window.location.hash = element.getAttribute('route');
+    },
+    onHashChange: function() {
+      var hash = window.location.hash.slice(1);
+      if (hash == '') hash = '/';
+      var results = this.menuItems.filter(function(menuItem) {
+        return menuItem.route==hash;
+      });
+
+      if(results.length) {
+        this.selected = results[0].name;
+      }
+
+      results = this.posts.filter(function(post, i) {
+        post.meta.index = i;
+        return post.meta.slug == hash.slice(1);
+      });
+
+      if(results.length) {
+        this.selected = results[0];
+      }
     }
   })
 </script>

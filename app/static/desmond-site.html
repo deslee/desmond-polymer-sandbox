@@ -1,43 +1,96 @@
 <link rel="import" href="../../bower_components/core-ajax/core-ajax.html">
+<link rel="import" href="../../bower_components/core-pages/core-pages.html">
 
 <link rel="import" href="desmond-menu.html">
-<link rel="import" href="desmond-posts.html">
-
+<link rel="import" href="desmond-content.html">
 
 <polymer-element name="desmond-site">
   <template>
-
     <style>
       main /deep/ h1, main /deep/ h2, main /deep/ h3, main /deep/ h4, main /deep/ h5, main /deep/ h6 {
-        font-family: 'Roboto Slab', serif;
         font-weight: 300;
+        font-family: 'Roboto Slab', serif;
+        color: #2c3e50;
+      }
+
+      main /deep/ .post-heading a {
+        border-bottom: 0;
+      }
+
+      main /deep/ a {
+        color: #2c3e50;
+        text-decoration: none;
+        border-bottom: 1px dotted #2c3e50;
+      }
+
+      desmond-menu {
+        display: block;
+        background-color: white;
       }
 
       main * {
-        font-family: 'Open Sans', sans-serif;
+        font-family: 'Questrial', sans-serif;
         font-weight: 400;
       }
-    </style>
-    <core-ajax auto url="blog.json" handleAs="json" on-core-response="{{handleResponse}}"></core-ajax>
 
-    <main>
-      <desmond-menu selected="{{selected}}" menuItems="{{menuItems}}"></desmond-menu>
-      <desmond-posts posts="{{posts}}"></desmond-posts>
-    </main>
+      desmond-content, header h1 {
+        max-width: 1024px;
+        margin: 0 auto;
+        display:block;
+      }
+
+      header {
+        background-color: #bdc3c7;
+        padding: 50px 0 150px;
+      }
+
+      header h1 {
+        font-size: 3em;
+        font-weight: 300;
+      }
+
+      @media only screen {
+        header h1 {
+          text-align: center;
+        }
+      }
+
+      @media only screen and (min-width: 641px) {
+        header h1 {
+          text-align: inherit;
+        }
+      }
+    </style>
+    <core-ajax auto url="blog.json" handleAs="json" on-core-response="{{handleBlogResponse}}"></core-ajax>
+    <core-ajax auto url="pages.json" handleAs="json" on-core-response="{{handlePagesResponse}}"></core-ajax>
+    <template if="{{receivedBlogData && receivedPageData}}">
+      <main>
+        <desmond-menu posts="{{posts}}" selected="{{selected}}" selectedIndex="{{pageIndex}}" menuItems="{{menuItems}}"></desmond-menu>
+        <div id="wrapper">
+
+          <header><h1>Desmond Lee</h1></header>
+          <desmond-content posts="{{posts}}" pages="{{pages}}" page="{{selected}}" pageIndex="{{pageIndex}}"></desmond-content>
+        </div>
+      </main>
+    </template>
 
   </template>
 
   <script>
     Polymer({
       ready: function() {
-        this.selected = 'Blog'
-        this.menuItems = [{name:'Blog', icon:'book'}, {name:'About', icon:'info'}, {name:'Projects'}, {name:'Favorites', icon:'favorite'}];
+        this.menuItems = [
+          {name:'Home', icon:'book', route:'/'}, {name:'About', icon:'info', route:'/about'}, {name:'Projects', route:'/projects'}
+        ];
         var $ = require('jquery');
 
         $(this.$.main).css('height', '100%');
       },
-      handleResponse: function(e, data) {
+      receivedBlogData: false,
+      receivedPageData: false,
+      handleBlogResponse: function(e, data) {
         var self = this;
+        self.receivedBlogData = true;
 
         self.posts = data.response.sort(function(a, b) {
           if (!a.meta.Date) {
@@ -47,6 +100,16 @@
             return -1;
           }
           return a.meta.Date < b.meta.Date;
+        });
+      },
+
+      handlePagesResponse: function(e, data) {
+        var self = this;
+        self.receivedPageData = true;
+
+        self.pages = {};
+        data.response.forEach(function(page) {
+          self.pages[page.meta.Title] = page;
         });
       }
     })
