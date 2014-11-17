@@ -1,0 +1,23 @@
+<polymer-element name="desmond-post" attributes="post">
+  <template>
+    <style>
+      #post {
+        padding: 0 8px;
+      }
+    </style>
+
+    <div id="post">
+      <h2>{{post.meta.Title}}</h2>
+      <div id="post-body"></div>
+    </div>
+  </template>
+  <script>
+    Polymer({
+      ready: function() {
+        var self = this;
+        var element = self.$['post-body'];
+        element.innerHTML = self.post.html;
+      }
+    });
+  </script>
+</polymer-element>

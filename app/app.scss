@@ -1,0 +1,12 @@
+// no
+html, body {
+  height: 100vh;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+body > main {
+  height: 100%;
+  box-sizing: border-box;
+}

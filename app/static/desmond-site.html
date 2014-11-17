@@ -1,0 +1,55 @@
+<link rel="import" href="../../bower_components/core-ajax/core-ajax.html">
+
+<link rel="import" href="desmond-menu.html">
+<link rel="import" href="desmond-posts.html">
+
+
+<polymer-element name="desmond-site">
+  <template>
+
+    <style>
+      main /deep/ h1, main /deep/ h2, main /deep/ h3, main /deep/ h4, main /deep/ h5, main /deep/ h6 {
+        font-family: 'Roboto Slab', serif;
+        font-weight: 300;
+      }
+
+      main * {
+        font-family: 'Open Sans', sans-serif;
+        font-weight: 400;
+      }
+    </style>
+    <core-ajax auto url="blog.json" handleAs="json" on-core-response="{{handleResponse}}"></core-ajax>
+
+    <main>
+      <desmond-menu selected="{{selected}}" menuItems="{{menuItems}}"></desmond-menu>
+      <desmond-posts posts="{{posts}}"></desmond-posts>
+    </main>
+
+  </template>
+
+  <script>
+    Polymer({
+      ready: function() {
+        this.selected = 'Blog'
+        this.menuItems = [{name:'Blog', icon:'book'}, {name:'About', icon:'info'}, {name:'Projects'}, {name:'Favorites', icon:'favorite'}];
+        var $ = require('jquery');
+
+        $(this.$.main).css('height', '100%');
+      },
+      handleResponse: function(e, data) {
+        var self = this;
+
+        self.posts = data.response.sort(function(a, b) {
+          if (!a.meta.Date) {
+            return 1;
+          }
+          else if (!b.meta.Date) {
+            return -1;
+          }
+          return a.meta.Date < b.meta.Date;
+        });
+      }
+    })
+
+  </script>
+</polymer-element>

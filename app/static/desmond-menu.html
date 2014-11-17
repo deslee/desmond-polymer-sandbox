@@ -1,0 +1,104 @@
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../../bower_components/core-collapse/core-collapse.html">
+<link rel="import" href="../../bower_components/core-menu/core-menu.html">
+<link rel="import" href="../../bower_components/core-item/core-item.html">
+<link rel="import" href="../../bower_components/core-collapse/core-collapse.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+
+<polymer-element name="desmond-menu" attributes="selected menuItems">
+<template>
+  <style>
+    #menuButton::shadow #ripple {
+      color: blue;
+    }
+
+    paper-tabs {
+      font-size: 1.25em;
+      background-color: #ecf0f1; /*clouds*/
+      font-weight: 300;
+      text-transform: lowercase;
+    }
+
+    paper-tabs::shadow #selectionBar {
+      background-color: #e74c3c; /*alizarin*/
+    }
+
+    paper-tabs paper-tab::shadow #ink {
+      color: #e74c3c; /*alizarin*/
+    }
+
+    @media only screen {
+      .dropdown {
+        display: inherit;
+      }
+      .tabs {
+        display: none;
+      }
+    }
+
+    @media only screen and (min-width: 641px) {
+      .dropdown {
+        display: none;
+      }
+      .tabs {
+        display: inherit;
+      }
+    }
+
+    core-menu {
+      background-color: #ecf0f1; /*clouds*/
+      margin: 0;
+    }
+
+    core-item {
+      padding-left: 8px;
+    }
+
+    core-item.core-selected {
+      background-color: #3498db;
+      color: #ecf0f1;
+      font-weight: normal;
+    }
+
+    h1 {
+      padding-left: 8px;
+    }
+  </style>
+
+  <div class="dropdown">
+    <paper-icon-button id="menuButton" on-click="{{menuButtonClicked}}" icon="menu"></paper-icon-button>
+    <core-collapse id="menu">
+      <core-menu selected="{{selected}}">
+        <template repeat="{{item in menuItems}}">
+          <core-item label="{{item.name}}" on-click="{{menuAction}}" name="{{item.name}}"></core-item>
+        </template>
+
+      </core-menu>
+    </core-collapse>
+  </div>
+
+  <div class="tabs">
+    <paper-tabs selected="{{selected}}" noink>
+      <template repeat="{{item in menuItems}}">
+        <paper-tab name="{{item.name}}" on-click="{{menuAction}}">{{item.name}}</paper-tab>
+      </template>
+    </paper-tabs>
+  </div>
+
+  <h1>Desmond Lee</h1>
+
+</template>
+
+<script>
+  Polymer({
+    ready: function() {
+    },
+    menuButtonClicked: function() {
+      this.$.menu.toggle();
+    },
+    menuAction: function(e, v, element) {
+    }
+  })
+</script>
+</polymer-element>
